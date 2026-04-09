@@ -1,0 +1,89 @@
+{
+  "auth": {
+    "login": "Masuk",
+    "register": "Daftar",
+    "forgot": "Lupa kata sandi",
+    "email": "Email",
+    "password": "Kata sandi",
+    "name": "Nama lengkap",
+    "phone": "Nomor telepon",
+    "codename": "Kode nama agen",
+    "codename_hint": "Setelah diisi tidak dapat diubah",
+    "codename_locked": "Sudah terkunci, tidak dapat diubah",
+    "login_btn": "Masuk",
+    "register_btn": "Daftar",
+    "forgot_btn": "Kirim link reset",
+    "back_login": "Kembali ke masuk",
+    "logout": "Keluar",
+    "welcome": "Selamat datang kembali",
+    "remember": "Ingat saya",
+    "logging_in": "Memasuki...",
+    "registering": "Mendaftar...",
+    "sending": "Mengirim...",
+    "reset_title": "Reset Kata Sandi",
+    "reset_subtitle": "Masukkan email, kami akan mengirim link reset",
+    "password_strength": "Kekuatan Kata Sandi",
+    "password_weak": "Lemah",
+    "password_medium": "Sedang",
+    "password_strong": "Kuat",
+    "back_to_login": "Kembali ke masuk",
+    "footer": "© 2026 Web人 Portal. All rights reserved."
+  },
+  "register_success": "Akun dibuat! Silakan cek email untuk konfirmasi.",
+  "reset_sent": "Link reset dikirim - cek kotak masuk Anda.",
+  "welcome": "Selamat datang",
+  "profile": {
+    "title": "Profil Saya",
+    "saved": "Profil disimpan!",
+    "bank_name": "Nama bank",
+    "bank_account_name": "Nama akun bank",
+    "bank_account_id": "Nomor akun bank",
+    "available_commission": "Komisi yang bisa diambil",
+    "extract": "Ambil Komisi",
+    "extract_hint": "Akan direset setelah diambil",
+    "extract_confirm": "Ambil semua komisi yang tersedia?",
+    "extracted": "Komisi berhasil diambil!"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "clients": "Klien",
+    "monthly": "Komisi Bulan Ini",
+    "yearly": "Komisi Tahun Ini",
+    "earned": "Sudah Diambil",
+    "invoices": "Tagihan Tertunda",
+    "no_clients": "Belum ada klien.",
+    "no_invoices": "Tidak ada tagihan tertunda.",
+    "approve": "Setujui",
+    "mark_paid": "Tandai Lunas",
+    "add_client": "Tambah Klien Baru",
+    "client_name": "Nama klien",
+    "plan": "Paket",
+    "monthly_fee": "Biaya bulanan",
+    "start_date": "Tanggal mulai",
+    "submit": "Kirim",
+    "cancel": "Batal",
+    "commission": "Komisi",
+    "due_date": "Jatuh tempo",
+    "total_commission": "Total Komisi"
+  },
+  "plans": {
+    "Option A Basic": "Paket A Dasar",
+    "Option A Professional": "Paket A Profesional",
+    "Option A Premium": "Paket A Premium"
+  },
+  "status": {
+    "active": "Aktif",
+    "hold": "Tunggu"
+  },
+  "errors": {
+    "login_failed": "Email atau kata sandi salah.",
+    "register_failed": "Gagal membuat akun.",
+    "forgot_failed": "Gagal mengirim link reset."
+  },
+  "toast": {
+    "client_added": "Klien diajukan untuk persetujuan!",
+    "client_approved": "Klien disetujui!",
+    "invoice_paid": "Tagihan ditandai lunas!",
+    "error": "Terjadi kesalahan."
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web人 Portal - Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-left">
+    <span class="logo">Web人</span>
+    <span id="header-country" class="country-badge-header hidden"></span>
+  </div>
+  <div class="header-right">
+    <div class="lang-selector">
+      <button class="lang-btn" data-lang="id">ID</button>
+      <button class="lang-btn" data-lang="zh-TW">TW</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <div id="header-user" class="header-user hidden">
+      <button id="btn-profile" class="btn-icon" title="Profile">👤</button>
+      <button id="btn-logout" class="btn-text" data-i18n="auth.logout">登出</button>
+    </div>
+  </div>
+</header>
+
+<!-- Auth Screen -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-container">
+    <div class="auth-logo">
+      <span class="logo-icon">🌐</span>
+      <h1>Web人 Portal</h1>
+    </div>
+
+    <!-- Auth Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login" data-i18n="auth.login">登入</button>
+      <button class="auth-tab" data-tab="register" data-i18n="auth.register">註冊</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="form-login" class="auth-form">
+      <div class="form-group">
+        <label for="login-email" data-i18n="auth.email">電子郵件</label>
+        <input type="email" id="login-email" placeholder="email@example.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="login-password" data-i18n="auth.password">密碼</label>
+        <div class="password-wrapper">
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+          <button type="button" class="toggle-password" data-target="login-password" aria-label="Toggle password">
+            <span class="eye-icon">👁</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="checkbox-label">
+          <input type="checkbox" id="login-remember">
+          <span data-i18n="auth.remember">記住我</span>
+        </label>
+        <button type="button" id="btn-forgot" class="forgot-link" data-i18n="auth.forgot">忘記密碼？</button>
+      </div>
+
+      <button type="submit" id="btn-login" class="btn-primary">
+        <span class="btn-text" data-i18n="auth.login">登入</span>
+        <span class="btn-loader hidden">
+          <span class="spinner"></span>
+        </span>
+      </button>
+
+      <div id="login-error" class="form-error hidden"></div>
+    </form>
+
+    <!-- Register Form -->
+    <form id="form-register" class="auth-form hidden">
+      <div class="form-group">
+        <label for="reg-codename" data-i18n="auth.codename">代理商代號</label>
+        <input type="text" id="reg-codename" required autocomplete="nickname">
+        <small class="form-hint" data-i18n="auth.codename_hint">設定後將無法修改</small>
+      </div>
+
+      <div class="form-group">
+        <label for="reg-name" data-i18n="auth.name">姓名</label>
+        <input type="text" id="reg-name" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-email" data-i18n="auth.email">電子郵件</label>
+        <input type="email" id="reg-email" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-phone" data-i18n="auth.phone">電話</label>
+        <input type="tel" id="reg-phone" autocomplete="tel">
+      </div>
+
+      <div class="form-group">
+        <label for="reg-password" data-i18n="auth.password">密碼</label>
+        <div class="password-wrapper">
+          <input type="password" id="reg-password" minlength="8" required autocomplete="new-password">
+          <button type="button" class="toggle-password" data-target="reg-password" aria-label="Toggle password">
+            <span class="eye-icon">👁</span>
+          </button>
+        </div>
+        <div class="password-strength">
+          <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+          </div>
+          <small class="strength-text" id="strength-text" data-i18n="auth.password_strength">密碼強度</small>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-register" class="btn-primary">
+        <span class="btn-text" data-i18n="auth.register">註冊</span>
+        <span class="btn-loader hidden">
+          <span class="spinner"></span>
+        </span>
+      </button>
+
+      <div id="reg-error" class="form-error hidden"></div>
+      <div id="reg-success" class="form-success hidden"></div>
+    </form>
+
+    <!-- Forgot Password Form -->
+    <form id="form-forgot" class="auth-form hidden">
+      <div class="auth-logo-sm">
+        <span class="logo-icon">🔑</span>
+        <h2 data-i18n="auth.reset_title">重設密碼</h2>
+      </div>
+      <p class="auth-subtitle" data-i18n="auth.reset_subtitle">輸入電子郵件，我們將發送重設連結</p>
+
+      <div class="form-group">
+        <label for="forgot-email" data-i18n="auth.email">電子郵件</label>
+        <input type="email" id="forgot-email" placeholder="email@example.com" required autocomplete="email">
+      </div>
+
+      <button type="submit" id="btn-forgot-submit" class="btn-primary">
+        <span class="btn-text" data-i18n="auth.forgot_btn">發送重設連結</span>
+        <span class="btn-loader hidden">
+          <span class="spinner"></span>
+        </span>
+      </button>
+
+      <div id="forgot-error" class="form-error hidden"></div>
+      <div id="forgot-success" class="form-success hidden"></div>
+
+      <button type="button" id="btn-back-login-forgot" class="btn-back" data-i18n="auth.back_login">返回登入</button>
+    </form>
+  </div>
+</div>
+
+<!-- Dashboard Screen -->
+<div id="dashboard-screen" class="hidden">
+
+  <!-- Profile Modal -->
+  <div id="profile-overlay" class="modal-overlay hidden">
+    <div class="modal modal-md">
+      <div class="modal-header">
+        <h3 data-i18n="profile.title">個人資料</h3>
+        <button id="btn-close-profile" class="btn-close">✕</button>
+      </div>
+      <form id="form-profile">
+        <div class="form-group">
+          <label data-i18n="auth.codename">代號</label>
+          <input type="text" id="profile-codename" disabled>
+          <small class="form-hint" data-i18n="auth.codename_locked">已鎖定，無法修改</small>
+        </div>
+        <div class="form-group">
+          <label data-i18n="auth.name">姓名</label>
+          <input type="text" id="profile-name">
+        </div>
+        <div class="form-group">
+          <label data-i18n="profile.bank_name">銀行名稱</label>
+          <input type="text" id="profile-bank-name" placeholder="例如：BCA, Mandiri, 玉山銀行">
+        </div>
+        <div class="form-group">
+          <label data-i18n="profile.bank_account_name">帳戶名稱</label>
+          <input type="text" id="profile-bank-account-name" placeholder="銀行帳戶持有人姓名">
+        </div>
+        <div class="form-group">
+          <label data-i18n="profile.bank_account_id">帳戶號碼</label>
+          <input type="text" id="profile-bank-account-id" placeholder="帳戶/卡號">
+        </div>
+        <div id="profile-error" class="form-error hidden"></div>
+        <div class="modal-actions">
+          <button type="submit" id="btn-save-profile" class="btn-primary" data-i18n="profile.save">儲存</button>
+        </div>
+      </form>
+
+      <!-- Commission Extract -->
+      <div class="commission-extract">
+        <div class="comm-row">
+          <span data-i18n="profile.available_commission">可提取佣金</span>
+          <strong id="profile-available-commission">Rp 0</strong>
+        </div>
+        <button type="button" id="btn-extract-commission" class="btn-primary btn-full" data-i18n="profile.extract">提取佣金</button>
+        <small class="form-hint" data-i18n="profile.extract_hint">每月提取一次，提取後歸零</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="dashboard.clients">客戶</div>
+      <div class="stat-value" id="stat-clients">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="dashboard.monthly">本月佣金</div>
+      <div class="stat-value" id="stat-monthly">Rp 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="dashboard.yearly">今年佣金</div>
+      <div class="stat-value" id="stat-yearly">Rp 0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label" data-i18n="dashboard.earned">已提取</div>
+      <div class="stat-value" id="stat-earned">Rp 0</div>
+    </div>
+  </div>
+
+  <!-- Dashboard Main -->
+  <div class="dashboard-main">
+
+    <!-- Clients Table -->
+    <div class="section-header">
+      <h2 data-i18n="dashboard.clients">客戶</h2>
+      <button id="btn-open-add-client" class="btn-primary" data-i18n="dashboard.add_client">新增客戶</button>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th data-i18n="dashboard.client_name">客戶名稱</th>
+            <th data-i18n="dashboard.plan">方案</th>
+            <th data-i18n="dashboard.monthly_fee">月費</th>
+            <th data-i18n="dashboard.commission">佣金</th>
+            <th data-i18n="status">狀態</th>
+            <th data-i18n="dashboard.start_date">開始日期</th>
+            <th id="col-approve"></th>
+          </tr>
+        </thead>
+        <tbody id="clients-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="total-row">
+      <span data-i18n="dashboard.total_commission">總佣金:</span>
+      <strong id="total-commission">Rp 0</strong>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="section-header" style="margin-top:40px">
+      <h2 data-i18n="dashboard.invoices">待處理發票</h2>
+    </div>
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th data-i18n="dashboard.client_name">客戶</th>
+            <th data-i18n="dashboard.commission">佣金</th>
+            <th data-i18n="dashboard.due_date">到期日</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="invoices-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Client Modal -->
+<div id="add-client-overlay" class="modal-overlay hidden">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3 data-i18n="dashboard.add_client">新增客戶</h3>
+      <button id="btn-close-modal" class="btn-close">✕</button>
+    </div>
+    <form id="form-add-client">
+      <div class="form-group">
+        <label data-i18n="dashboard.client_name">客戶名稱</label>
+        <input type="text" id="client-name" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="dashboard.plan">方案</label>
+        <select id="client-plan" required>
+          <option value="">—</option>
+          <option value="Option A Basic">Option A Basic</option>
+          <option value="Option A Professional">Option A Professional</option>
+          <option value="Option A Premium">Option A Premium</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label data-i18n="dashboard.monthly_fee">月費</label>
+        <input type="number" id="client-fee" placeholder="3000000" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="dashboard.start_date">開始日期</label>
+        <input type="date" id="client-start">
+      </div>
+      <div id="add-client-error" class="form-error hidden"></div>
+      <div class="modal-actions">
+        <button type="button" id="btn-close-modal2" class="btn-secondary" data-i18n="dashboard.cancel">取消</button>
+        <button type="submit" id="btn-submit-client" class="btn-primary" data-i18n="dashboard.submit">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

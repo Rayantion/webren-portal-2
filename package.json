@@ -1,0 +1,8 @@
+{
+  "name": "portal-webren",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "vercel-build": "echo 'static site'"
+  }
+}

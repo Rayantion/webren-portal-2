@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd portal-webren && git remote -v\",\"description\":\"Check GitHub remote URL for portal-webren\"}",
+  "error": "Exit code 1\n/usr/bin/bash: line 1: cd: portal-webren: No such file or directory",
+  "timestamp": "2026-04-07T13:52:21.808Z",
+  "retry_count": 1
+}

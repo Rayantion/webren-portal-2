@@ -1,0 +1,89 @@
+{
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "forgot": "Forgot Password",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "phone": "Phone",
+    "codename": "Agent Codename",
+    "codename_hint": "Cannot be changed after set",
+    "codename_locked": "Locked, cannot be changed",
+    "login_btn": "Login",
+    "register_btn": "Register",
+    "forgot_btn": "Send Reset Link",
+    "back_login": "Back to Login",
+    "logout": "Logout",
+    "welcome": "Welcome back",
+    "remember": "Remember me",
+    "logging_in": "Logging in...",
+    "registering": "Registering...",
+    "sending": "Sending...",
+    "reset_title": "Reset Password",
+    "reset_subtitle": "Enter your email and we'll send a reset link",
+    "password_strength": "Password Strength",
+    "password_weak": "Weak",
+    "password_medium": "Medium",
+    "password_strong": "Strong",
+    "back_to_login": "Back to Login",
+    "footer": "© 2026 Web人 Portal. All rights reserved."
+  },
+  "register_success": "Account created! Please check your email to confirm.",
+  "reset_sent": "Reset link sent - check your inbox.",
+  "welcome": "Welcome",
+  "profile": {
+    "title": "My Profile",
+    "saved": "Profile saved!",
+    "bank_name": "Bank Name",
+    "bank_account_name": "Account Name",
+    "bank_account_id": "Account Number",
+    "available_commission": "Available Commission",
+    "extract": "Withdraw Commission",
+    "extract_hint": "Resets after each withdrawal",
+    "extract_confirm": "Withdraw all available commission?",
+    "extracted": "Commission withdrawn!"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "clients": "Clients",
+    "monthly": "This Month",
+    "yearly": "This Year",
+    "earned": "Withdrawn",
+    "invoices": "Pending Invoices",
+    "no_clients": "No clients yet.",
+    "no_invoices": "No pending invoices.",
+    "approve": "Approve",
+    "mark_paid": "Mark Paid",
+    "add_client": "Add Client",
+    "client_name": "Client Name",
+    "plan": "Plan",
+    "monthly_fee": "Monthly Fee",
+    "start_date": "Start Date",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "commission": "Commission",
+    "due_date": "Due Date",
+    "total_commission": "Total Commission"
+  },
+  "plans": {
+    "Option A Basic": "Option A Basic",
+    "Option A Professional": "Option A Professional",
+    "Option A Premium": "Option A Premium"
+  },
+  "status": {
+    "active": "Active",
+    "hold": "On Hold"
+  },
+  "errors": {
+    "login_failed": "Email or password incorrect.",
+    "register_failed": "Failed to create account.",
+    "forgot_failed": "Failed to send reset link."
+  },
+  "toast": {
+    "client_added": "Client submitted for approval!",
+    "client_approved": "Client approved!",
+    "invoice_paid": "Invoice marked as paid!",
+    "error": "An error occurred."
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "auth": {
+    "login": "登入",
+    "register": "註冊",
+    "forgot": "忘記密碼",
+    "email": "電子郵件",
+    "password": "密碼",
+    "name": "姓名",
+    "phone": "電話",
+    "codename": "代理商代號",
+    "codename_hint": "設定後將無法修改",
+    "codename_locked": "已鎖定，無法修改",
+    "login_btn": "登入",
+    "register_btn": "註冊",
+    "forgot_btn": "發送重設連結",
+    "back_login": "返回登入",
+    "logout": "登出",
+    "welcome": "歡迎回來",
+    "remember": "記住我",
+    "logging_in": "登入中...",
+    "registering": "註冊中...",
+    "sending": "發送中...",
+    "reset_title": "重設密碼",
+    "reset_subtitle": "輸入電子郵件，我們將發送重設連結",
+    "password_strength": "密碼強度",
+    "password_weak": "弱",
+    "password_medium": "中等",
+    "password_strong": "強",
+    "back_to_login": "返回登入",
+    "footer": "© 2026 Web人 Portal. All rights reserved."
+  },
+  "register_success": "帳戶已建立！請檢查您的電子郵件進行確認。",
+  "reset_sent": "重設連結已發送 - 請檢查您的收件匣。",
+  "welcome": "歡迎",
+  "profile": {
+    "title": "我的資料",
+    "saved": "已儲存！",
+    "bank_name": "銀行名稱",
+    "bank_account_name": "帳戶名稱",
+    "bank_account_id": "帳戶號碼",
+    "available_commission": "可提取佣金",
+    "extract": "提取佣金",
+    "extract_hint": "提取後歸零，每月重新計算",
+    "extract_confirm": "確定要提取所有可提取的佣金？",
+    "extracted": "佣金已提取！"
+  },
+  "dashboard": {
+    "title": "儀表板",
+    "clients": "客戶",
+    "monthly": "本月佣金",
+    "yearly": "今年佣金",
+    "earned": "已提取",
+    "invoices": "待處理發票",
+    "no_clients": "尚無客戶。",
+    "no_invoices": "無待處理發票。",
+    "approve": "核准",
+    "mark_paid": "標記已付",
+    "add_client": "新增客戶",
+    "client_name": "客戶名稱",
+    "plan": "方案",
+    "monthly_fee": "月費",
+    "start_date": "開始日期",
+    "submit": "送出",
+    "cancel": "取消",
+    "commission": "佣金",
+    "due_date": "到期日",
+    "total_commission": "總佣金"
+  },
+  "plans": {
+    "Option A Basic": "A方案 基本版",
+    "Option A Professional": "A方案 專業版",
+    "Option A Premium": "A方案 高級版"
+  },
+  "status": {
+    "active": "啟用中",
+    "hold": "待審核"
+  },
+  "errors": {
+    "login_failed": "電子郵件或密碼錯誤。",
+    "register_failed": "建立帳戶失敗。",
+    "forgot_failed": "發送重設連結失敗。"
+  },
+  "toast": {
+    "client_added": "客戶已提交審核！",
+    "client_approved": "客戶已核准！",
+    "invoice_paid": "發票已標記為已付！",
+    "error": "發生錯誤。"
+  }
+}
