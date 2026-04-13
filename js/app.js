@@ -534,19 +534,23 @@ function renderAllowedEmails(emails) {
     return;
   }
   const rows = emails.map(e => {
-    const label = e.label === 'admin' ? 'Admin' : 'Paid';
-    const labelBadge = e.label === 'admin'
-      ? '<span class="status-badge status-active" style="font-size:0.7rem">' + label + '</span>'
-      : '<span class="status-badge status-hold" style="font-size:0.7rem">' + label + '</span>';
+    const isAdmin = e.is_admin;
+    const isPaid = e.is_paid;
+    const isFree = e.is_free;
+    let badges = '';
+    if (isAdmin) badges += '<span class="status-badge status-active" style="font-size:0.7rem;margin-right:4px">Admin</span>';
+    else if (isPaid) badges += '<span class="status-badge status-hold" style="font-size:0.7rem;margin-right:4px">Paid</span>';
+    if (isFree) badges += '<span class="status-badge" style="font-size:0.7rem;background:rgba(99,102,241,0.15);color:var(--primary)">Free</span>';
+    if (!badges) badges = '<span style="color:var(--text-muted);font-size:0.8rem">—</span>';
     const date = e.created_at ? new Date(e.created_at).toLocaleDateString() : '—';
-    return '<tr><td>' + escHtml(e.email) + '</td><td>' + labelBadge + '</td><td>' + date + '</td><td><button type="button" class="btn-delete" data-id="' + escAttr(e.id) + '">' + escHtml(I18N.t('dashboard.delete') || 'Delete') + '</button></td></tr>';
+    return '<tr><td>' + escHtml(e.email) + '</td><td>' + badges + '</td><td>' + date + '</td><td><button type="button" class="btn-delete" data-email="' + escAttr(e.email) + '">' + escHtml(I18N.t('dashboard.delete') || 'Delete') + '</button></td></tr>';
   });
   tbody.innerHTML = rows.join('');
-  tbody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteAllowedEmail(btn.dataset.id)));
+  tbody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteAllowedEmail(btn.dataset.email)));
 }
 
-async function deleteAllowedEmail(id) {
-  const { error } = await sb.from('allowed_emails').delete().eq('id', id);
+async function deleteAllowedEmail(email) {
+  const { error } = await sb.from('allowed_emails').delete().eq('email', email);
   if (error) { showToast(I18N.t('toast.error')); return; }
   showToast(I18N.t('toast.email_deleted') || 'Email removed');
   loadAllowedEmails();
@@ -559,7 +563,9 @@ async function handleAddEmail(e) {
   showMsg('add-email-error', '');
   const email = document.getElementById('email-address').value.trim().toLowerCase();
   const label = document.getElementById('email-label').value;
-  const { error } = await sb.from('allowed_emails').insert({ email, label, country: userCountry });
+  const isAdmin = label === 'admin';
+  const isFree = label === 'free';
+  const { error } = await sb.from('allowed_emails').insert({ email, is_admin: isAdmin, is_paid: true, is_free: isFree, country: userCountry });
   if (error) {
     showMsg('add-email-error', error.message || I18N.t('toast.error'));
   } else {
