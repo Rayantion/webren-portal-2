@@ -27,6 +27,30 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* === Geometry Background === */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(99,102,241,0.12) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.geo-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.geo-ring {
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  border: 1px solid rgba(99,102,241,0.08);
+}
+
+.geo-ring-2 {
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(99,102,241,0.06);
+}
+
 .hidden { display: none !important; }
 
 /* === Header === */
@@ -86,6 +110,26 @@ body {
 .btn-icon:hover { background: var(--card); border-color: var(--primary); }
 
 /* === Auth === */
+.auth-screen {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 60px);
+}
+
+.auth-screen .geo-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-70%, -70%);
+}
+
+.auth-screen .geo-ring-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-30%, -30%);
+}
+
 .auth-container {
   max-width: 400px;
   margin: 60px auto;
@@ -93,6 +137,8 @@ body {
   background: var(--surface);
   border-radius: 16px;
   border: 1px solid var(--border);
+  position: relative;
+  z-index: 2;
 }
 .auth-logo { text-align: center; font-size: 1.5rem; font-weight: 700; margin-bottom: 24px; }
 .auth-logo .logo-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
@@ -348,7 +394,28 @@ body {
 .stat-value { font-size: 1.4rem; font-weight: 700; color: var(--primary); }
 
 /* === Dashboard === */
-.dashboard-main { padding: 24px; max-width: 1200px; margin: 0 auto; }
+.dashboard-screen {
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-screen .geo-ring {
+  position: absolute;
+  top: 40%;
+  right: 5%;
+  transform: translateY(-50%);
+}
+
+.dashboard-screen .geo-ring-2 {
+  position: absolute;
+  bottom: 10%;
+  left: 8%;
+}
+
+.dashboard-main {
+  position: relative;
+  z-index: 2;
+}
 .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .section-header h2 { font-size: 1.2rem; color: var(--text); }
 
@@ -458,6 +525,35 @@ body {
 }
 .btn-extract:hover { opacity: 0.85; }
 .btn-extract:disabled { background: var(--border); cursor: not-allowed; opacity: 1; }
+
+/* === Contract Overlay === */
+.contract-body {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.contract-body h4 { color: var(--text); margin: 12px 0 6px; font-size: 0.9rem; }
+.contract-body p { margin-bottom: 10px; }
+.contract-body .section-title { font-weight: 600; color: var(--primary); margin: 16px 0 8px; font-size: 0.95rem; }
+
+.contract-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contract-agree-label {
+  font-size: 0.9rem;
+  color: var(--text);
+}
 
 /* === Toast === */
 .toast {

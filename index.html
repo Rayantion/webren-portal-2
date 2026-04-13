@@ -35,7 +35,9 @@
 </header>
 
 <!-- Auth Screen -->
-<div id="auth-screen" class="auth-screen">
+<div id="auth-screen" class="auth-screen dot-pattern">
+  <div class="geo-ring"></div>
+  <div class="geo-ring-2"></div>
   <div class="auth-container">
     <div class="auth-logo">
       <span class="logo-icon">🌐</span>
@@ -161,8 +163,33 @@
   </div>
 </div>
 
+<!-- Contract Overlay -->
+<div id="contract-overlay" class="modal-overlay hidden">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3 data-i18n="contract.title">代理商推薦協議</h3>
+      <button id="btn-close-contract" class="btn-close">✕</button>
+    </div>
+    <div class="contract-body" id="contract-body">
+      <!-- Terms content injected by JS -->
+    </div>
+    <div class="contract-footer">
+      <label class="checkbox-label contract-agree-label">
+        <input type="checkbox" id="contract-agree">
+        <span data-i18n="contract.agree">我已閱讀並同意條款</span>
+      </label>
+      <div class="modal-actions">
+        <button type="button" id="btn-contract-disagree" class="btn-secondary" data-i18n="contract.disagree">返回</button>
+        <button type="button" id="btn-contract-confirm" class="btn-primary" data-i18n="auth.register" disabled>註冊</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Dashboard Screen -->
-<div id="dashboard-screen" class="hidden">
+<div id="dashboard-screen" class="dashboard-screen dot-pattern hidden">
+  <div class="geo-ring"></div>
+  <div class="geo-ring-2"></div>
 
   <!-- Profile Modal -->
   <div id="profile-overlay" class="modal-overlay hidden">

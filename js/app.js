@@ -98,6 +98,102 @@ function updatePasswordStrength(password) {
   }
 }
 
+/* === Contract === */
+let pendingRegisterData = null;
+
+function mkEl(tag, cls) {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  return el;
+}
+
+function showContractOverlay() {
+  document.getElementById('contract-overlay').classList.remove('hidden');
+  renderContractBody();
+  document.getElementById('contract-agree').checked = false;
+  document.getElementById('btn-contract-confirm').disabled = true;
+}
+
+function hideContractOverlay() {
+  document.getElementById('contract-overlay').classList.add('hidden');
+  pendingRegisterData = null;
+}
+
+function t(key) { return I18N.t(key); }
+
+function renderContractBody() {
+  const container = document.getElementById('contract-body');
+  container.innerHTML = '';
+  const s = I18N.strings;
+
+  function section(titleKey) {
+    const h = mkEl('h4');
+    h.textContent = t(titleKey);
+    container.appendChild(h);
+  }
+
+  function para(enKey, localKey) {
+    const p = mkEl('p');
+    const strong = mkEl('strong');
+    strong.textContent = t(enKey);
+    p.appendChild(strong);
+    p.appendChild(document.createElement('br'));
+    p.appendChild(document.createTextNode(t(localKey)));
+    container.appendChild(p);
+  }
+
+  function divider(key) {
+    const div = mkEl('div', 'section-title');
+    div.textContent = t(key);
+    container.appendChild(div);
+  }
+
+  function note(text) {
+    const p = mkEl('p');
+    p.style.cssText = 'margin-top:16px;color:var(--text-muted);font-size:0.8rem';
+    p.textContent = text;
+    container.appendChild(p);
+  }
+
+  section('terms.company');
+  section('terms.agent');
+
+  divider('terms.section1');
+  para('terms.rate_en', 'terms.rate');
+  para('terms.clawback_en', 'terms.clawback');
+  para('terms.minimum_en', 'terms.minimum');
+  para('terms.timeline_en', 'terms.timeline');
+
+  divider('terms.section2');
+  para('terms.no_employment_en', 'terms.no_employment');
+  para('terms.no_authority_en', 'terms.no_authority');
+
+  divider('terms.section3');
+  para('terms.no_spam_en', 'terms.no_spam');
+  para('terms.non_solicitation_en', 'terms.non_solicitation');
+
+  divider('terms.section4');
+  para('terms.confidentiality_en', 'terms.confidentiality');
+
+  divider('terms.section5');
+  para('terms.liability_en', 'terms.liability');
+
+  divider('terms.section6');
+  para('terms.termination_convenience_en', 'terms.termination_convenience');
+  para('terms.termination_cause_en', 'terms.termination_cause');
+
+  divider('terms.section7');
+  para('terms.jurisdiction_en', 'terms.jurisdiction');
+
+  divider('terms.section8');
+  para('terms.electronic_en', 'terms.electronic');
+  para('terms.age_en', 'terms.age');
+  para('terms.read_en', 'terms.read');
+  para('terms.signature_en', 'terms.signature');
+
+  note(t('terms.contact'));
+}
+
 /* === DOM Ready === */
 document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -112,12 +208,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.addEventListener('click', () => switchAuthTab(btn.dataset.tab));
   });
 
-  // Password visibility toggle
   document.querySelectorAll('.toggle-password').forEach(btn => {
     btn.addEventListener('click', () => togglePassword(btn.dataset.target));
   });
 
-  // Password strength indicator
   const regPassword = document.getElementById('reg-password');
   if (regPassword) {
     regPassword.addEventListener('input', () => updatePasswordStrength(regPassword.value));
@@ -142,12 +236,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('client-fee').value = fee;
   });
 
-  document.querySelectorAll('.country-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      userCountry = btn.dataset.country;
-      document.querySelectorAll('.country-btn').forEach(b => b.classList.toggle('active', b.dataset.country === userCountry));
-    });
+  // Contract overlay
+  document.getElementById('contract-agree').addEventListener('change', e => {
+    document.getElementById('btn-contract-confirm').disabled = !e.target.checked;
   });
+  document.getElementById('btn-contract-disagree').addEventListener('click', hideContractOverlay);
+  document.getElementById('btn-close-contract').addEventListener('click', hideContractOverlay);
+  document.getElementById('contract-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) hideContractOverlay();
+  });
+  document.getElementById('btn-contract-confirm').addEventListener('click', confirmRegister);
 
   sb.auth.onAuthStateChange(async (_event, session) => {
     if (session && session.user) {
@@ -204,32 +302,62 @@ async function handleLogin(e) {
 
 async function handleRegister(e) {
   e.preventDefault();
-  const btn = document.getElementById('btn-register');
-  const btnText = btn.querySelector('.btn-text');
-  const btnLoader = btn.querySelector('.btn-loader');
-
-  btn.disabled = true;
-  btnText.classList.add('hidden');
-  btnLoader.classList.remove('hidden');
   showMsg('reg-error', '');
   showMsg('reg-success', '');
 
-  const name  = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const phone = document.getElementById('reg-phone').value.trim();
-  const pass  = document.getElementById('reg-password').value;
+  const codename = document.getElementById('reg-codename').value.trim();
+  const name    = document.getElementById('reg-name').value.trim();
+  const email   = document.getElementById('reg-email').value.trim();
+  const phone   = document.getElementById('reg-phone').value.trim();
+  const pass    = document.getElementById('reg-password').value;
+
+  if (!codename || !name || !email || !phone || !pass) {
+    showMsg('reg-error', I18N.t('errors.fill_all_fields') || 'Please fill in all fields before registering');
+    return;
+  }
+
+  if (pass.length < 8) {
+    showMsg('reg-error', I18N.t('errors.password_min_length') || 'Password must be at least 8 characters');
+    return;
+  }
+
+  pendingRegisterData = { codename, name, email, phone, pass };
+  showContractOverlay();
+}
+
+async function confirmRegister() {
+  if (!pendingRegisterData) return;
+
+  const btn = document.getElementById('btn-contract-confirm');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = I18N.t('auth.registering') || 'Registering...';
 
   const { error } = await sb.auth.signUp({
-    email, password: pass,
-    options: { data: { full_name: name, phone, country: userCountry, lang: userLang } }
+    email: pendingRegisterData.email,
+    password: pendingRegisterData.pass,
+    options: {
+      data: {
+        full_name: pendingRegisterData.name,
+        codename: pendingRegisterData.codename,
+        phone: pendingRegisterData.phone,
+        country: userCountry,
+        lang: userLang
+      }
+    }
   });
 
-  if (error) showMsg('reg-error', I18N.t('errors.register_failed'));
-  else { showMsg('reg-success', I18N.t('register_success'), true); e.target.reset(); }
+  if (error) {
+    showMsg('reg-error', I18N.t('errors.register_failed'));
+  } else {
+    showMsg('reg-success', I18N.t('register_success'), true);
+    document.getElementById('form-register').reset();
+    hideContractOverlay();
+    setTimeout(() => switchAuthTab('login'), 2000);
+  }
 
   btn.disabled = false;
-  btnText.classList.remove('hidden');
-  btnLoader.classList.add('hidden');
+  btn.textContent = originalText;
 }
 
 async function handleForgotPassword(e) {
@@ -404,7 +532,6 @@ function showAuthForm(name) {
   });
   if (name === 'login' || name === 'register') switchAuthTab(name);
   if (name === 'forgot') {
-    // No tab button for forgot — just show the form
     document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
   }
 }
