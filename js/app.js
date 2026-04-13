@@ -230,6 +230,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.target === e.currentTarget) closeModal();
   });
   document.getElementById('form-add-client').addEventListener('submit', handleAddClient);
+
+  // Email modal handlers
+  document.getElementById('btn-open-add-email').addEventListener('click', () => document.getElementById('add-email-overlay').classList.remove('hidden'));
+  document.getElementById('btn-close-email-modal').addEventListener('click', () => document.getElementById('add-email-overlay').classList.add('hidden'));
+  document.getElementById('btn-close-email-modal2').addEventListener('click', () => document.getElementById('add-email-overlay').classList.add('hidden'));
+  document.getElementById('add-email-overlay').addEventListener('click', e => {
+    if (e.target === e.currentTarget) document.getElementById('add-email-overlay').classList.add('hidden');
+  });
+  document.getElementById('form-add-email').addEventListener('submit', handleAddEmail);
+
+  // Close status dropdowns on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.status-dropdown.open').forEach(d => d.classList.remove('open'));
+  });
   document.getElementById('client-plan').addEventListener('change', e => {
     const fees = { 'Option A Basic': 3000000, 'Option A Professional': 4500000, 'Option A Premium': 5000000 };
     const fee = fees[e.target.value] != null ? fees[e.target.value] : '';
@@ -274,7 +288,6 @@ async function resolveAdmin() {
   const name = (data && data.full_name) || currentUser.email;
   document.getElementById('header-welcome').textContent = I18N.t('welcome') + ', ' + name;
   document.getElementById('header-user').classList.remove('hidden');
-  document.getElementById('col-approve').classList.toggle('hidden', !isAdmin);
 }
 
 async function handleLogin(e) {
@@ -307,7 +320,7 @@ async function handleRegister(e) {
 
   const codename = document.getElementById('reg-codename').value.trim();
   const name    = document.getElementById('reg-name').value.trim();
-  const email   = document.getElementById('reg-email').value.trim();
+  const email   = document.getElementById('reg-email').value.trim().toLowerCase();
   const phone   = document.getElementById('reg-phone').value.trim();
   const pass    = document.getElementById('reg-password').value;
 
@@ -318,6 +331,17 @@ async function handleRegister(e) {
 
   if (pass.length < 8) {
     showMsg('reg-error', I18N.t('errors.password_min_length') || 'Password must be at least 8 characters');
+    return;
+  }
+
+  // Check if email is in allowed_emails table
+  const { data: allowed, error: allowedErr } = await sb
+    .from('allowed_emails')
+    .select('id')
+    .eq('email', email)
+    .limit(1);
+  if (allowedErr || !allowed || !allowed.length) {
+    showMsg('reg-error', I18N.t('errors.email_not_allowed') || 'This email is not authorized for registration.');
     return;
   }
 
@@ -389,17 +413,23 @@ async function handleLogout() {
 }
 
 async function loadDashboard() {
-  await Promise.all([loadClients(), loadInvoices()]);
+  if (isAdmin) {
+    document.getElementById('allowed-emails-section').classList.remove('hidden');
+    await Promise.all([loadClients(), loadInvoices(), loadAllowedEmails()]);
+  } else {
+    document.getElementById('allowed-emails-section').classList.add('hidden');
+    await Promise.all([loadClients(), loadInvoices()]);
+  }
 }
 
 async function loadClients() {
   const tbody = document.getElementById('clients-tbody');
-  tbody.innerHTML = '<tr><td colspan="7" class="empty-row">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="8" class="empty-row">Loading...</td></tr>';
   const query = isAdmin
     ? sb.from('clients').select('*, agents(full_name)').eq('country', userCountry).order('created_at', { ascending: false })
-    : sb.from('clients').select('*').eq('agent_id', currentUser.id).eq('country', userCountry).order('created_at', { ascending: false });
+    : sb.from('clients').select('*').eq('agent_id', currentUser.id).order('created_at', { ascending: false });
   const { data, error } = await query;
-  if (error) { tbody.innerHTML = '<tr><td colspan="7" class="empty-row">Error loading clients.</td></tr>'; return; }
+  if (error) { tbody.innerHTML = '<tr><td colspan="8" class="empty-row">Error loading clients.</td></tr>'; return; }
   renderClients(data || []);
   renderStats(data || []);
   await loadTotalEarned();
@@ -408,7 +438,7 @@ async function loadClients() {
 function renderClients(clients) {
   const tbody = document.getElementById('clients-tbody');
   if (!clients.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="empty-row">' + I18N.t('dashboard.no_clients') + '</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" class="empty-row">' + escHtml(I18N.t('dashboard.no_clients')) + '</td></tr>';
     document.getElementById('total-commission').textContent = fmt(0);
     return;
   }
@@ -417,19 +447,45 @@ function renderClients(clients) {
     const fee = Number(c.monthly_fee) || 0;
     const comm = fee * COMMISSION;
     if (c.status === 'active') totalComm += comm;
-    const badge = c.status === 'active'
-      ? '<span class="status-badge status-active">' + escHtml(I18N.t('status.active')) + '</span>'
-      : '<span class="status-badge status-hold">' + escHtml(I18N.t('status.hold')) + '</span>';
+    const statusMap = {
+      active: { key: 'status.active', cls: 'status-active' },
+      hold:   { key: 'status.hold',   cls: 'status-hold' },
+      cancelled: { key: 'status.cancelled', cls: 'status-cancelled' }
+    };
+    const s = statusMap[c.status] || statusMap.hold;
+    const badgeClass = isAdmin ? 'status-badge clickable' : 'status-badge';
+    const badge = isAdmin
+      ? '<div class="status-dropdown-wrapper"><span class="' + badgeClass + ' ' + s.cls + '" data-client-id="' + escAttr(c.id) + '">' + escHtml(I18N.t(s.key)) + '</span><div class="status-dropdown" id="dropdown-' + escAttr(c.id) + '"><button data-status="active"><span class="dot dot-active"></span>' + escHtml(I18N.t('status.active')) + '</button><button data-status="hold"><span class="dot dot-hold"></span>' + escHtml(I18N.t('status.hold')) + '</button><button data-status="cancelled"><span class="dot dot-cancelled"></span>' + escHtml(I18N.t('status.cancelled')) + '</button></div></div>'
+      : '<span class="status-badge ' + s.cls + '">' + escHtml(I18N.t(s.key)) + '</span>';
     const agentInfo = (isAdmin && c.agents)
       ? '<span style="font-size:0.8rem;color:var(--text-muted)">' + escHtml(c.agents.full_name) + '</span><br>' : '';
-    const approveBtn = (isAdmin && c.status !== 'active')
+    const approveBtn = (isAdmin && c.status === 'hold')
       ? '<button type="button" class="btn-approve" data-id="' + escAttr(c.id) + '">' + escHtml(I18N.t('dashboard.approve')) + '</button>' : '';
+    const contractIcon = c.start_date ? '✅' : '—';
     const startDate = c.start_date ? new Date(c.start_date).toLocaleDateString() : '—';
-    return '<tr><td>' + agentInfo + escHtml(c.client_name) + '</td><td>' + escHtml(c.plan) + '</td><td>' + fmt(fee) + '</td><td>' + fmt(comm) + '</td><td>' + badge + '</td><td>' + startDate + '</td><td>' + approveBtn + '</td></tr>';
+    return '<tr><td>' + agentInfo + escHtml(c.client_name) + '</td><td>' + escHtml(c.plan) + '</td><td>' + fmt(fee) + '</td><td>' + fmt(comm) + '</td><td>' + badge + '</td><td>' + startDate + '</td><td>' + contractIcon + '</td><td>' + approveBtn + '</td></tr>';
   });
   tbody.innerHTML = rows.join('');
   document.getElementById('total-commission').textContent = fmt(totalComm);
   tbody.querySelectorAll('.btn-approve').forEach(btn => btn.addEventListener('click', () => approveClient(btn.dataset.id)));
+  // Attach status dropdown events for admin
+  if (isAdmin) {
+    tbody.querySelectorAll('.status-badge.clickable').forEach(badge => {
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Close all other dropdowns
+        document.querySelectorAll('.status-dropdown.open').forEach(d => { if (d.id !== 'dropdown-' + badge.dataset.clientId) d.classList.remove('open'); });
+        const dropdown = document.getElementById('dropdown-' + badge.dataset.clientId);
+        if (dropdown) dropdown.classList.toggle('open');
+      });
+    });
+    tbody.querySelectorAll('.status-dropdown button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const clientId = btn.closest('.status-dropdown').id.replace('dropdown-', '');
+        updateClientStatus(clientId, btn.dataset.status);
+      });
+    });
+  }
 }
 
 function renderStats(clients) {
@@ -455,6 +511,66 @@ async function approveClient(id) {
   loadClients();
 }
 
+async function updateClientStatus(clientId, newStatus) {
+  const { error } = await sb.from('clients').update({ status: newStatus }).eq('id', clientId);
+  if (error) { showToast(I18N.t('toast.error')); return; }
+  showToast(I18N.t('toast.status_updated') || 'Status updated');
+  loadClients();
+}
+
+/* === Allowed Emails === */
+async function loadAllowedEmails() {
+  const tbody = document.getElementById('emails-tbody');
+  tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Loading...</td></tr>';
+  const { data, error } = await sb.from('allowed_emails').select('*').eq('country', userCountry).order('created_at', { ascending: false });
+  if (error) { tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Error loading emails.</td></tr>'; return; }
+  renderAllowedEmails(data || []);
+}
+
+function renderAllowedEmails(emails) {
+  const tbody = document.getElementById('emails-tbody');
+  if (!emails.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-row">' + escHtml(I18N.t('dashboard.no_emails') || 'No allowed emails yet.') + '</td></tr>';
+    return;
+  }
+  const rows = emails.map(e => {
+    const label = e.label === 'admin' ? 'Admin' : 'Paid';
+    const labelBadge = e.label === 'admin'
+      ? '<span class="status-badge status-active" style="font-size:0.7rem">' + label + '</span>'
+      : '<span class="status-badge status-hold" style="font-size:0.7rem">' + label + '</span>';
+    const date = e.created_at ? new Date(e.created_at).toLocaleDateString() : '—';
+    return '<tr><td>' + escHtml(e.email) + '</td><td>' + labelBadge + '</td><td>' + date + '</td><td><button type="button" class="btn-delete" data-id="' + escAttr(e.id) + '">' + escHtml(I18N.t('dashboard.delete') || 'Delete') + '</button></td></tr>';
+  });
+  tbody.innerHTML = rows.join('');
+  tbody.querySelectorAll('.btn-delete').forEach(btn => btn.addEventListener('click', () => deleteAllowedEmail(btn.dataset.id)));
+}
+
+async function deleteAllowedEmail(id) {
+  const { error } = await sb.from('allowed_emails').delete().eq('id', id);
+  if (error) { showToast(I18N.t('toast.error')); return; }
+  showToast(I18N.t('toast.email_deleted') || 'Email removed');
+  loadAllowedEmails();
+}
+
+async function handleAddEmail(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-submit-email');
+  btn.disabled = true;
+  showMsg('add-email-error', '');
+  const email = document.getElementById('email-address').value.trim().toLowerCase();
+  const label = document.getElementById('email-label').value;
+  const { error } = await sb.from('allowed_emails').insert({ email, label, country: userCountry });
+  if (error) {
+    showMsg('add-email-error', error.message || I18N.t('toast.error'));
+  } else {
+    document.getElementById('add-email-overlay').classList.add('hidden');
+    e.target.reset();
+    showToast(I18N.t('toast.email_added') || 'Email added');
+    loadAllowedEmails();
+  }
+  btn.disabled = false;
+}
+
 async function loadInvoices() {
   const tbody = document.getElementById('invoices-tbody');
   tbody.innerHTML = '<tr><td colspan="4" class="empty-row">Loading...</td></tr>';
@@ -468,7 +584,7 @@ async function loadInvoices() {
 function renderInvoices(invoices) {
   const tbody = document.getElementById('invoices-tbody');
   if (!invoices.length) {
-    tbody.innerHTML = '<tr><td colspan="4" class="empty-row">' + I18N.t('dashboard.no_invoices') + '</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-row">' + escHtml(I18N.t('dashboard.no_invoices')) + '</td></tr>';
     return;
   }
   const rows = invoices.map(inv => {

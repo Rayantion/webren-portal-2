@@ -420,10 +420,11 @@ body {
 .section-header h2 { font-size: 1.2rem; color: var(--text); }
 
 /* === Tables === */
-.table-wrapper { overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: var(--radius); overflow: hidden; }
-.data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-.data-table th { background: var(--card); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
+.table-wrapper { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; }
+.data-table { width: 100%; border-collapse: collapse; background: var(--surface); overflow: hidden; }
+.data-table th, .data-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.data-table th { background: var(--card); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 600; position: sticky; top: 0; }
+.data-table td { font-size: 0.9rem; vertical-align: middle; }
 .data-table tr:last-child td { border-bottom: none; }
 .data-table tr:hover td { background: rgba(99,102,241,0.05); }
 
@@ -439,9 +440,65 @@ body {
 }
 .status-active { background: rgba(16,185,129,0.15); color: var(--success); }
 .status-hold { background: rgba(245,158,11,0.15); color: var(--warning); }
+.status-cancelled { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+/* Status Dropdown */
+.status-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.status-badge.clickable {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.status-badge.clickable:hover {
+  opacity: 0.8;
+}
+.status-badge.clickable::after {
+  content: ' ▾';
+  font-size: 0.6rem;
+  vertical-align: middle;
+}
+.status-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 200;
+  min-width: 140px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: none;
+}
+.status-dropdown.open { display: block; }
+.status-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.status-dropdown button:hover { background: rgba(99,102,241,0.15); }
+.status-dropdown button .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.dot-active { background: var(--success); }
+.dot-hold { background: var(--warning); }
+.dot-cancelled { background: var(--danger); }
 
 /* === Action Buttons === */
-.btn-approve, .btn-pay {
+.btn-approve, .btn-pay, .btn-delete {
   padding: 6px 14px;
   border: none;
   border-radius: 6px;
@@ -451,7 +508,8 @@ body {
 }
 .btn-approve { background: var(--success); color: white; }
 .btn-pay { background: var(--primary); color: white; }
-.btn-approve:hover, .btn-pay:hover { opacity: 0.85; }
+.btn-delete { background: var(--danger); color: white; }
+.btn-approve:hover, .btn-pay:hover, .btn-delete:hover { opacity: 0.85; }
 
 /* === Total Row === */
 .total-row {

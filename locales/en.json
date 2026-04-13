@@ -69,7 +69,15 @@
     "quick_actions": "Quick Actions",
     "edit": "Edit",
     "delete": "Delete",
-    "confirm_delete": "Delete this client?"
+    "confirm_delete": "Delete this client?",
+    "contract": "Contract",
+    "action": "Action",
+    "allowed_emails": "Allowed Emails",
+    "add_email": "Add Email",
+    "email": "Email",
+    "label": "Label",
+    "added_date": "Added Date",
+    "no_emails": "No allowed emails yet."
   },
   "contract": {
     "title": "Agent Referral Agreement",
@@ -85,20 +93,25 @@
   },
   "status": {
     "active": "Active",
-    "hold": "On Hold"
+    "hold": "On Hold",
+    "cancelled": "Cancelled"
   },
   "errors": {
     "login_failed": "Email or password incorrect.",
     "register_failed": "Failed to create account.",
     "forgot_failed": "Failed to send reset link.",
     "fill_all_fields": "Please fill in all fields before registering",
-    "password_min_length": "Password must be at least 8 characters"
+    "password_min_length": "Password must be at least 8 characters",
+    "email_not_allowed": "This email is not authorized for registration."
   },
   "toast": {
     "client_added": "Client submitted for approval!",
     "client_approved": "Client approved!",
     "invoice_paid": "Invoice marked as paid!",
-    "error": "An error occurred."
+    "error": "An error occurred.",
+    "status_updated": "Status updated!",
+    "email_added": "Email added!",
+    "email_deleted": "Email removed!"
   },
   "terms": {
     "title": "Agent Referral Agreement",

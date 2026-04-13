@@ -69,7 +69,15 @@
     "quick_actions": "快速操作",
     "edit": "編輯",
     "delete": "刪除",
-    "confirm_delete": "確定要刪除此客戶？"
+    "confirm_delete": "確定要刪除此客戶？",
+    "contract": "合約",
+    "action": "操作",
+    "allowed_emails": "允許的電子郵件",
+    "add_email": "新增電子郵件",
+    "email": "電子郵件",
+    "label": "標籤",
+    "added_date": "新增日期",
+    "no_emails": "尚無允許的電子郵件。"
   },
   "contract": {
     "title": "代理商推薦協議",
@@ -85,20 +93,25 @@
   },
   "status": {
     "active": "啟用中",
-    "hold": "待審核"
+    "hold": "待審核",
+    "cancelled": "已取消"
   },
   "errors": {
     "login_failed": "電子郵件或密碼錯誤。",
     "register_failed": "建立帳戶失敗。",
     "forgot_failed": "發送重設連結失敗。",
     "fill_all_fields": "請填寫所有欄位後再註冊",
-    "password_min_length": "密碼至少需要 8 個字符"
+    "password_min_length": "密碼至少需要 8 個字符",
+    "email_not_allowed": "此電子郵件未獲授權註冊。"
   },
   "toast": {
     "client_added": "客戶已提交審核！",
     "client_approved": "客戶已核准！",
     "invoice_paid": "發票已標記為已付！",
-    "error": "發生錯誤。"
+    "error": "發生錯誤。",
+    "status_updated": "狀態已更新！",
+    "email_added": "電子郵件已新增！",
+    "email_deleted": "電子郵件已移除！"
   },
   "terms": {
     "title": "代理商推薦協議",

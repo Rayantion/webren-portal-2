@@ -276,7 +276,8 @@
             <th data-i18n="dashboard.commission">佣金</th>
             <th data-i18n="status">狀態</th>
             <th data-i18n="dashboard.start_date">開始日期</th>
-            <th id="col-approve"></th>
+            <th data-i18n="dashboard.contract">合約</th>
+            <th data-i18n="dashboard.action">操作</th>
           </tr>
         </thead>
         <tbody id="clients-tbody"></tbody>
@@ -299,11 +300,32 @@
             <th data-i18n="dashboard.client_name">客戶</th>
             <th data-i18n="dashboard.commission">佣金</th>
             <th data-i18n="dashboard.due_date">到期日</th>
-            <th></th>
+            <th data-i18n="dashboard.action">操作</th>
           </tr>
         </thead>
         <tbody id="invoices-tbody"></tbody>
       </table>
+    </div>
+
+    <!-- Allowed Emails (Admin Only) -->
+    <div id="allowed-emails-section" class="hidden" style="margin-top:40px">
+      <div class="section-header">
+        <h2 data-i18n="dashboard.allowed_emails">Allowed Emails</h2>
+        <button id="btn-open-add-email" class="btn-primary" data-i18n="dashboard.add_email">Add Email</button>
+      </div>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="dashboard.email">Email</th>
+              <th data-i18n="dashboard.label">Label</th>
+              <th data-i18n="dashboard.added_date">Added Date</th>
+              <th data-i18n="dashboard.action">Action</th>
+            </tr>
+          </thead>
+          <tbody id="emails-tbody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -341,6 +363,34 @@
       <div class="modal-actions">
         <button type="button" id="btn-close-modal2" class="btn-secondary" data-i18n="dashboard.cancel">取消</button>
         <button type="submit" id="btn-submit-client" class="btn-primary" data-i18n="dashboard.submit">送出</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add Email Modal -->
+<div id="add-email-overlay" class="modal-overlay hidden">
+  <div class="modal modal-md">
+    <div class="modal-header">
+      <h3 data-i18n="dashboard.add_email">Add Email</h3>
+      <button id="btn-close-email-modal" class="btn-close">✕</button>
+    </div>
+    <form id="form-add-email">
+      <div class="form-group">
+        <label data-i18n="dashboard.email">Email</label>
+        <input type="email" id="email-address" placeholder="agent@example.com" required>
+      </div>
+      <div class="form-group">
+        <label data-i18n="dashboard.label">Label</label>
+        <select id="email-label" required>
+          <option value="admin">Admin</option>
+          <option value="paid">Paid</option>
+        </select>
+      </div>
+      <div id="add-email-error" class="form-error hidden"></div>
+      <div class="modal-actions">
+        <button type="button" id="btn-close-email-modal2" class="btn-secondary" data-i18n="dashboard.cancel">取消</button>
+        <button type="submit" id="btn-submit-email" class="btn-primary" data-i18n="dashboard.submit">送出</button>
       </div>
     </form>
   </div>

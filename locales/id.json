@@ -69,7 +69,15 @@
     "quick_actions": "Aksi Cepat",
     "edit": "Ubah",
     "delete": "Hapus",
-    "confirm_delete": "Hapus klien ini?"
+    "confirm_delete": "Hapus klien ini?",
+    "contract": "Kontrak",
+    "action": "Aksi",
+    "allowed_emails": "Email yang Diizinkan",
+    "add_email": "Tambah Email",
+    "email": "Email",
+    "label": "Label",
+    "added_date": "Tanggal Ditambahkan",
+    "no_emails": "Belum ada email yang diizinkan."
   },
   "contract": {
     "title": "Perjanjian Referral Agen",
@@ -85,20 +93,25 @@
   },
   "status": {
     "active": "Aktif",
-    "hold": "Tunggu"
+    "hold": "Tunggu",
+    "cancelled": "Dibatalkan"
   },
   "errors": {
     "login_failed": "Email atau kata sandi salah.",
     "register_failed": "Gagal membuat akun.",
     "forgot_failed": "Gagal mengirim link reset.",
     "fill_all_fields": "Silakan isi semua kolom sebelum mendaftar",
-    "password_min_length": "Kata sandi minimal 8 karakter"
+    "password_min_length": "Kata sandi minimal 8 karakter",
+    "email_not_allowed": "Email ini tidak diizinkan untuk pendaftaran."
   },
   "toast": {
     "client_added": "Klien diajukan untuk persetujuan!",
     "client_approved": "Klien disetujui!",
     "invoice_paid": "Tagihan ditandai lunas!",
-    "error": "Terjadi kesalahan."
+    "error": "Terjadi kesalahan.",
+    "status_updated": "Status diperbarui!",
+    "email_added": "Email ditambahkan!",
+    "email_deleted": "Email dihapus!"
   },
   "terms": {
     "title": "Perjanjian Referral Agen",
